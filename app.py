@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import render_template, request
+from flask import render_template, request, jsonify
 from flaskext.mysql import MySQL
 
 app = Flask(__name__) #Creado de la app 
@@ -15,12 +15,7 @@ mysql.init_app(app)
 @app.route("/") #Ruteo de la app 
 def index():
 
-    sql = "INSERT INTO `medicos` (`id`, `nombre`, `correo`, `foto`) VALUES (NULL, 'Santiago', 'santiago333@hotmail.com', 'foto.jpg');"
-    conn = mysql.connect()
-    cursor = conn.cursor()
-    cursor.execute(sql)
-    conn.commit()
-
+    
     return render_template('medicos/index.html') 
 
 @app.route('/create')
@@ -30,20 +25,26 @@ def create():
 
 @app.route('/store', methods=['POST'])
 def storage():
-    _nombre = request.form['txtNombre']
-    _correo= request.form['txtCorreo']
-
-    _foto = request.files['txtFoto']
-
+    data = request.get_json()
+    
+    _nombre = data["txtNombre"]
+    _correo= data["txtCorreo"]
+    _foto = data["txtFoto"]
     
     sql = "INSERT INTO `medicos` (`id`, `nombre`, `correo`, `foto`) VALUES (NULL,%s,%s,%s);"
 
-    datos=(_nombre,_correo,_foto.filename)
+    datos=(_nombre,_correo,_foto)
 
     conn = mysql.connect()
     cursor = conn.cursor()
     cursor.execute(sql,datos)
     conn.commit()
 
+    response = {
+        "txtNombre": _nombre,
+        "txtCorreo": _correo,
+        "txtFoto": _foto
+    }
+    return jsonify(response), 201
 if __name__ == '__main__':
     app.run(debug=True)
