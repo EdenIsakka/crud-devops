@@ -114,12 +114,39 @@ def update(id):
 
         return jsonify(response), 500
     
-@app.route("/patch-medicos/<int:id>")
-def patch():
+@app.route("/update-medicos/<col>/<int:id>", methods=['PATCH']) 
+def patch(col,id):
+    try:
+        
+        data = request.get_json()
+        
+        update_data = data['data_to_update']
 
+        conn = mysql.connect()
+        cursor = conn.cursor()
 
+        query = f"UPDATE medicos SET {col} = %s WHERE id = %s"
 
+        params = (update_data,id)
 
+        cursor.execute(query,params)
+        conn.commit()
+        cursor.close()
+        
+        response = {
+            'error' : False,
+            'message' : 'Item Actualizado correctamente',
+            'data' : {'col': col, 'id' :id}
+    }
+        return jsonify(response), 201
+    except Exception as e:
+        response = {
+            'error' : True,
+            'message':f'Error actualizando el item {e}',
+            'data' : None
+        }
+
+        return jsonify(response), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
