@@ -46,19 +46,38 @@ def save():
 
         return jsonify(response), 500
 
+
 @app.route("/read-medicos", methods =['GET'])
 def read():
+    try:
 
-    sql = 'SELECT * FROM `medicos`'
+        conn = mysql.connect()
+        cursor = conn.cursor()
 
-    conn = mysql.connect()
-    cursor = conn.cursor()
-    x = cursor.execute(sql)
-    print(x)
-    conn.commit()
+        query = 'SELECT * FROM medicos'
 
-    return 'Si'
+        cursor.execute(query)
+        data = cursor.fetchall()
+        cursor.close()
 
+        items = [{'txtNombre': item[1], 'txtCorreo': item[2], 'txtFoto': item[0]} for item in data]
+    
+        response = {
+        'error':False,
+        'message': "Item obtenido con exito",
+        'data' : items
+    }
+
+
+        return jsonify(response), 200
+    except Exception as e:
+     response = {
+        'error':True,
+        'message': f"Error Obteniendo el Item: {e}",
+        'data' : None,
+    }
+
+    return jsonify(response), 500
 
 
 
