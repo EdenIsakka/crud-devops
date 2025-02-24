@@ -79,6 +79,45 @@ def read():
 
     return jsonify(response), 500
 
+@app.route("/update-medicos/<int:id>", methods =['PUT'])
+def update(id):
+    try:
+
+        data = request.get_json()
+
+        nombre = data['txtNombre']
+        correo = data['txtCorreo']
+        foto = data['txtFoto']
+        
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        query = "UPDATE medicos SET nombre = %s, correo = %s, foto =%s WHERE id = %s"
+        params = (nombre, correo, foto,id)
+        cursor.execute(query,params)
+        conn.commit()
+        cursor.close()
+
+        response = {
+            'error':False,
+            'message': 'Item Actualizado correctamente',
+            'data' : {'id':id}
+    }
+
+        return jsonify(response), 201
+    except Exception as e:
+        response = {
+            'error':True,
+            'message': f'error actualizando el Item {e}',
+            'data': None
+        }
+
+        return jsonify(response), 500
+    
+@app.route("/patch-medicos/<int:id>")
+def patch():
+
+
 
 
 
