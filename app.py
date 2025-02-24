@@ -147,6 +147,35 @@ def patch(col,id):
         }
 
         return jsonify(response), 500
+    
+@app.route("/delete-medicos/<int:id>", methods=['DELETE'])
+def delete(id):
+    try:
+
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        query = 'DELETE FROM medicos WHERE id = %s'
+        params = (id)
+
+        cursor.execute(query,params)
+        conn.commit()
+        cursor.close()
+
+        response = {
+            'error' : False,
+            'message' : 'Item borrado con exito',
+            'data' : {'id': id}
+        }
+
+        return jsonify(response), 204
+    except Exception as e:
+        response = {
+            'error' : True,
+            'message' : f'Error en {e}',
+            'data' : None,
+        }
+        return jsonify(response), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
