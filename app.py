@@ -12,39 +12,56 @@ app.config['MYSQL_DATABASE_DB'] = 'sistema'
 mysql.init_app(app)
 
 
-@app.route("/") #Ruteo de la app 
-def index():
+@app.route('/create-medicos', methods=['POST'])
+def save():
+    try:
+        data = request.get_json()
+        
+        _nombre = data["txtNombre"]
+        _correo= data["txtCorreo"]
+        _foto = data["txtFoto"]
+        
+        query = "INSERT INTO `medicos` (`id`, `nombre`, `correo`, `foto`) VALUES (NULL,%s,%s,%s);"
 
-    
-    return render_template('medicos/index.html') 
+        datos=(_nombre,_correo,_foto)
 
-@app.route('/create')
-def create():
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute(query,datos)
+        conn.commit()
+        cursor.close()
 
-    return render_template('medicos/create.html')
+        response = {
+            'error' : False,
+            'message': 'Data creada con exito',
+            'data' : data
+        }
+        return jsonify(response), 201
+    except Exception as e:
+        response = {
+            'error' : True,
+            'message': f'Ocurrio un Error: {e}',
+            'data' : None
+        }
 
-@app.route('/store', methods=['POST'])
-def storage():
-    data = request.get_json()
-    
-    _nombre = data["txtNombre"]
-    _correo= data["txtCorreo"]
-    _foto = data["txtFoto"]
-    
-    sql = "INSERT INTO `medicos` (`id`, `nombre`, `correo`, `foto`) VALUES (NULL,%s,%s,%s);"
+        return jsonify(response), 500
 
-    datos=(_nombre,_correo,_foto)
+@app.route("/read-medicos", methods =['GET'])
+def read():
+
+    sql = 'SELECT * FROM `medicos`'
 
     conn = mysql.connect()
     cursor = conn.cursor()
-    cursor.execute(sql,datos)
+    x = cursor.execute(sql)
+    print(x)
     conn.commit()
 
-    response = {
-        "txtNombre": _nombre,
-        "txtCorreo": _correo,
-        "txtFoto": _foto
-    }
-    return jsonify(response), 201
+    return 'Si'
+
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
