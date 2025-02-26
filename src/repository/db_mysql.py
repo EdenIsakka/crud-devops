@@ -10,4 +10,4 @@ def get_connection():
             db=config('MYSQL_DB')
         )
     except Exception as ex:
-        print(ex)
+        print('Error de conexion a MySQL',ex)

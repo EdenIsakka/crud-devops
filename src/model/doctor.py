@@ -1,4 +1,4 @@
-class medico():
+class Doctor():
 
     def __init__(self,id,nombre,correo,foto) -> None: #Metodo constructor de medico 
         self.id = id
