@@ -1,12 +1,12 @@
 from flask import request, jsonify
 from pydantic import ValidationError
-from src.services.doctor_services import ServiceDoctor
-from src.utils import DoctorSchema 
+from services.doctor_services import ServiceDoctor
+from utils.schemas import DoctorSchema
 
 def create_doctor(): #Endpoint Create
     try:
         data = request.get_json
-        doctor = DoctorSchema(**data) #Validacion con Pydantic
+        doctor = DoctorSchema(**data()) #Validacion con Pydantic
         response = ServiceDoctor.save_doctor(doctor)
         return jsonify(response), 201
     except ValidationError as e:
