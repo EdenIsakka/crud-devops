@@ -1,15 +1,12 @@
 from flask import Flask
-from flaskext.mysql import MySQL
-
-
-#Controllers
-
-from .controller import controller_doctor
+from controller.controller_doctor import create_doctor, read_doctor
+from repository.db_mysql import init_db
 
 app = Flask(__name__)
-mysql = MySQL()
+init_db(app) #Config la base de datos
 
+app.add_url_rule('/create-doctor','create_doctor', create_doctor, methods=['POST'])
+app.add_url_rule('/read-medicos', read_doctor, methods=['GET'])
 
-def init_app(config):
-    #Configuracion
-    app.config.from_object(config)
+if __name__ == '__main__':
+    app.run(debug=True)

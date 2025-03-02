@@ -1,40 +1,44 @@
 from flask import Flask
 from flask import render_template, request, jsonify
-from flaskext.mysql import MySQL
+from repository.db_mysql import get_connection
 
-mysql = MySQL()
 
-class ServiceDoctor():
+class ServiceDoctor:
+
     @classmethod
-    def save_doctor():
+    def create_doctor(cls,doctor):
         try:
-            data = request.get_json()
-            
-            _nombre = data["txtNombre"]
-            _correo= data["txtCorreo"]
-            _foto = data["txtFoto"]
-            
-            query = "INSERT INTO `medicos` (`id`, `nombre`, `correo`, `foto`) VALUES (NULL,%s,%s,%s);"
+            query = "INSERT INTO `medicos` (`id`, `nombre`, `correo`, `foto`) VALUES (NULL, %s,%s,%s);"
+            datos = (doctor.txtNombre, doctor.txtCorreo, doctor.txtFoto)
 
-            datos=(_nombre,_correo,_foto)
-
-            conn = mysql.connect()
+            conn = get_connection()
             cursor = conn.cursor()
             cursor.execute(query,datos)
             conn.commit()
             cursor.close()
 
-            response = {
+            return {
                 'error' : False,
-                'message': 'Data creada con exito',
-                'data' : data
+                'message': 'Medico creado con exito',
+                'data': doctor.dict()
             }
-            return jsonify(response), 201
         except Exception as e:
-            response = {
-                'error' : True,
-                'message': f'Ocurrio un Error: {e}',
-                'data' : None
-            }
+            return {'error': True, 'message': f'Ocurrio un error: {e}'}
+        
+    @classmethod
+    def read_doctor(cls):
+      try:
+          query = 'SELECT * FROM medicos;'
+          conn = get_connection()
+          cursor = conn.cursor()
+          cursor.execute(query)
+          doctors = cursor.fetchall()
+          cursor.close()
 
-            return jsonify(response), 500
+          doctors_list = [{'id': doc[0], 'nombre': doc[1], 'correo': doc[2], 'foto': doc[3]} for doc in doctors]
+
+          return {'error': False, 'message': 'Lista de medicos obtenida con exito', 'data':doctors_list}
+      except Exception as e:
+          return {'error': True, 'message': f'Ocurrio un error: {e}'}
+          
+            
