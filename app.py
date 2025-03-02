@@ -79,7 +79,7 @@ def read():
 
     return jsonify(response), 500
 
-@app.route("/update-medicos/<int:id>", methods =['PUT'])
+#@app.route("/update-medicos/<int:id>", methods =['PUT'])
 def update(id):
     try:
 
@@ -114,7 +114,7 @@ def update(id):
 
         return jsonify(response), 500
     
-@app.route("/update-medicos/<col>/<int:id>", methods=['PATCH']) 
+#@app.route("/update-medicos/<col>/<int:id>", methods=['PATCH']) 
 def patch(col,id):
     try:
         
