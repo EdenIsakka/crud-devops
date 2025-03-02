@@ -6,10 +6,10 @@ from repository.db_mysql import get_connection
 class ServiceDoctor:
 
     @classmethod
-    def save_doctor(cls,doctor):
+    def create_doctor(cls,doctor):
         try:
-            query = "INSERT INTO `medicos` (`id`, `nombre`, `correo`, `foto`) VALUES (NULL,%s,%s,%s);"
-            datos = (doctor.nombre, doctor.correo, doctor.foto)
+            query = "INSERT INTO `medicos` (`id`, `nombre`, `correo`, `foto`) VALUES (NULL, %s,%s,%s);"
+            datos = (doctor.txtNombre, doctor.txtCorreo, doctor.txtFoto)
 
             conn = get_connection()
             cursor = conn.cursor()
@@ -23,7 +23,22 @@ class ServiceDoctor:
                 'data': doctor.dict()
             }
         except Exception as e:
-            return {
-                'error': True,
-                'message': f'Ocurrio un error : {e}'
-            }
+            return {'error': True, 'message': f'Ocurrio un error: {e}'}
+        
+    @classmethod
+    def read_doctor(cls):
+      try:
+          query = 'SELECT * FROM medicos;'
+          conn = get_connection()
+          cursor = conn.cursor()
+          cursor.execute(query)
+          doctors = cursor.fetchall()
+          cursor.close()
+
+          doctors_list = [{'id': doc[0], 'nombre': doc[1], 'correo': doc[2], 'foto': doc[3]} for doc in doctors]
+
+          return {'error': False, 'message': 'Lista de medicos obtenida con exito', 'data':doctors_list}
+      except Exception as e:
+          return {'error': True, 'message': f'Ocurrio un error: {e}'}
+          
+            

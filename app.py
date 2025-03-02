@@ -12,7 +12,7 @@ app.config['MYSQL_DATABASE_DB'] = 'sistema'
 mysql.init_app(app)
 
 
-@app.route('/create-medicos', methods=['POST'])
+#@app.route('/create-medicos', methods=['POST'])
 def save():
     try:
         data = request.get_json()
@@ -47,7 +47,7 @@ def save():
         return jsonify(response), 500
 
 
-@app.route("/read-medicos", methods =['GET'])
+#@app.route("/read-medicos", methods =['GET'])
 def read():
     try:
 
