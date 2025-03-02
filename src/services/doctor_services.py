@@ -32,7 +32,7 @@ class ServiceDoctor:
           conn = get_connection()
           cursor = conn.cursor()
           cursor.execute(query)
-          doctors = cursor.fetchall()
+          doctors = cursor.fetchall() or []
           cursor.close()
 
           doctors_list = [{'id': doc[0], 'nombre': doc[1], 'correo': doc[2], 'foto': doc[3]} for doc in doctors]
