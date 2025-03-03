@@ -1,0 +1,7 @@
+Flask
+pymysql
+flask-mysqldb
+python-dotenv
+python-decouple
+pydantic[email]
+email-validator 
