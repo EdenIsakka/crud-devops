@@ -1,6 +1,6 @@
 import os
 import pymysql
-from flaskext.mysql import MySQL
+from flask_mysqldb import MySQL 
 from decouple import config
 
 mysql = MySQL()

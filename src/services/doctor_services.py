@@ -40,7 +40,8 @@ class ServiceDoctor:
 
           return {'error': False, 'message': 'Lista de medicos obtenida con exito', 'data':doctors_list}
       except Exception as e:
-          return {'error': True, 'message': f'Ocurrio un error: {e}'}
+          print(f'Error en la API: {e}')
+          return {'error': True, 'message': f'Ocurrio un error: {str(e)}'}
       
     @classmethod
     def update_doctor(cls, doc_id, doctor_data):

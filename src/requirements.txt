@@ -1,4 +1,7 @@
 Flask
 pymysql
+flask-mysqldb
 python-dotenv
-pydantic
+python-decouple
+pydantic[email]
+email-validator 
