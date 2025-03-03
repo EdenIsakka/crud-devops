@@ -42,3 +42,12 @@ def patch_doctor(id):
         return jsonify({'error': True, 'message':'Datos invalidos', 'details': e.errors()},400)
     except Exception as e:
         return jsonify({'error': True, 'message': f'error inesperado: {e}' }),500
+
+
+def delete_doctor(id):
+    try:
+        response = ServiceDoctor.delete_doctor(id)
+        return jsonify(response), 204
+    except Exception as e:
+        return jsonify({'error': True, 'message': f'Error inesperado: {e}'}), 500
+    

@@ -64,7 +64,7 @@ class ServiceDoctor:
         try:
             if isinstance (updates, DoctorSchema):
                 updates = updates.model_dump()
-                
+
             update_fields = ", ".join(f"{key} = %s" for key in updates.keys())
             query = f"UPDATE medicos SET {update_fields} WHERE id = %s"
             values = list(updates.values()) + [doc_id]
@@ -79,6 +79,24 @@ class ServiceDoctor:
         except Exception as e:
             return {'error': True, 'message': f'Error actualizando el doctor: {e}'}
 
+    @classmethod
+    def delete_doctor(cls,doc_id):
+        try:
+            query = "DELETE FROM medicos WHERE id = %s;"
+            conn = get_connection()
+            cursor = conn.cursor()
+            cursor.execute(query, (doc_id,))
+            conn.commit()
 
+            if cursor.rowcount == 0: #Verifica si realmente se elimina el doc
+                return {'error': True, 'message': f'No se Encontro un doctor con ID {doc_id}'}
+            
+            cursor.close()
+            return {'error': False, 'message': f'Doctor con ID {doc_id} eliminado correctamente'}
+        except Exception as e:
+            return {'error':True, 'message': f'error eliminando el doctor: {e}'}
+             
+
+        
           
             
