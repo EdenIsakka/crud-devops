@@ -59,6 +59,25 @@ class ServiceDoctor:
         except Exception as e:
             return {'error': True, 'message': f'Error actualizando el doctor: {e}'}
 
+    @classmethod
+    def patch_doctor(cls, doc_id, updates):
+        try:
+            if isinstance (updates, DoctorSchema):
+                updates = updates.model_dump()
+                
+            update_fields = ", ".join(f"{key} = %s" for key in updates.keys())
+            query = f"UPDATE medicos SET {update_fields} WHERE id = %s"
+            values = list(updates.values()) + [doc_id]
+
+            conn = get_connection()
+            cursor = conn.cursor()
+            cursor.execute(query,values)
+            conn.commit()
+            cursor.close()
+
+            return {'error': False, 'message': f'Doctor con ID {doc_id} actualizado correctamente'}
+        except Exception as e:
+            return {'error': True, 'message': f'Error actualizando el doctor: {e}'}
 
 
           
