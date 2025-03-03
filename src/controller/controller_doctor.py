@@ -23,7 +23,7 @@ def read_doctor():
     
 def update_doctor(id):
     try:
-        data = request.get_json()
+        data = request.get_json
         doctor = DoctorSchema(**data())
         response = ServiceDoctor.update_doctor(id,doctor)
         return jsonify(response),201

@@ -10,7 +10,7 @@ class ServiceDoctor:
     def create_doctor(cls,doctor):
         try:
             query = "INSERT INTO `medicos` (`id`, `nombre`, `correo`, `foto`) VALUES (NULL, %s,%s,%s);"
-            datos = (doctor.txtNombre, doctor.txtCorreo, doctor.txtFoto)
+            datos = (doctor.nombre, doctor.correo, doctor.foto)
 
             conn = get_connection()
             cursor = conn.cursor()
@@ -45,11 +45,9 @@ class ServiceDoctor:
     @classmethod
     def update_doctor(cls, doc_id, doctor_data):
         try:
-            if isinstance(doctor_data, dict): #Verifica si doctor_data es un dic y lo convierte a obj Pydantic
-                doctor_data = DoctorSchema(**doctor_data()) #Convierte en obj valido
 
             query = "UPDATE medicos SET nombre = %s, correo = %s, foto =%s WHERE id = %s"
-            datos = (doctor_data.txtNombre, doctor_data.txtCorreo, doctor_data.txtFoto, doc_id )
+            datos = (doctor_data.nombre, doctor_data.correo, doctor_data.foto, doc_id )
 
             conn = get_connection()
             cursor = conn.cursor()
