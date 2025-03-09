@@ -28,20 +28,22 @@ class ServiceDoctor:
         
     @classmethod
     def read_doctor(cls):
-      try:
-          query = 'SELECT * FROM medicos;'
-          conn = get_connection()
-          cursor = conn.cursor()
-          cursor.execute(query)
-          doctors = cursor.fetchall() or []
-          cursor.close()
+        try:
+            conn = get_connection()
+            if not conn:
+                raise Exception("No se pudo conectar a la base de datos")
 
-          doctors_list = [{'id': doc[0], 'nombre': doc[1], 'correo': doc[2], 'foto': doc[3]} for doc in doctors]
-
-          return {'error': False, 'message': 'Lista de medicos obtenida con exito', 'data':doctors_list}
-      except Exception as e:
-          print(f'Error en la API: {e}')
-          return {'error': True, 'message': f'Ocurrio un error: {str(e)}'}
+            cursor = conn.cursor()  # ⚠️ Si da error con dictionary=True, usa esta línea
+            cursor.execute("SELECT * FROM medicos;")
+            data = cursor.fetchall()
+            cursor.close()
+            conn.close()
+            
+            print(f"📡 Datos recuperados de MySQL: {data}")  # Debug
+            return data
+        except Exception as e:
+            print(f"❌ ERROR en read_doctor: {e}")  # Debug
+            return []
       
     @classmethod
     def update_doctor(cls, doc_id, doctor_data):

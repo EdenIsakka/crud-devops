@@ -2,7 +2,7 @@
 FROM python:3.11
 
 # Configurar el directorio de trabajo dentro del contenedor
-WORKDIR /app
+WORKDIR /__init__
 
 # Copiar el archivo de dependencias
 COPY requirements.txt requirements.txt

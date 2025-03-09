@@ -16,13 +16,16 @@ def init_db(app):
 
 def get_connection():
     try:
-        return pymysql.connect(
-            host=config('MYSQL_HOST', default='localhost'),
-            port=config('MYSQL_PORT', default=3306, cast=int),
-            user=config('MYSQL_USER', default='root'),
-            password=config('MYSQL_PASSWORD', default=''),
-            db=config('MYSQL_DB', default='sistema'),
+        conn = pymysql.connect(
+            host=os.getenv("MYSQL_HOST", "mysql"),
+            port=int(os.getenv("MYSQL_PORT", 3306)),
+            user=os.getenv("MYSQL_USER", "admin"),
+            password=os.getenv("MYSQL_PASSWORD", "admin"),
+            db=os.getenv("MYSQL_DB", "sistema"),
             cursorclass=pymysql.cursors.DictCursor
         )
-    except Exception as ex:
-        return None  
+        print("Conexión a MySQL exitosa")
+        return conn
+    except Exception as e:
+        print(f"ERROR en la conexión a MySQL: {e}")
+        return None

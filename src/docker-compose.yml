@@ -27,7 +27,7 @@ services:
       MYSQL_PASSWORD: admin
       MYSQL_DB: sistema
     volumes:
-      - .:/app  # 
+      - .:/__init__  # 
 
 volumes:
   mysql_data:
