@@ -14,12 +14,20 @@ def create_doctor(): #Endpoint Create
     except Exception as e:
         return jsonify({'error': True, 'message': f"Error inesperado: {e}"}), 500
 
-def read_doctor():
+def read_medicos():
     try:
-        response = ServiceDoctor.read_doctor()
-        return jsonify(response), 200
+        print("📡 Iniciando la obtención de médicos")  # Depuración
+        medicos = ServiceDoctor.read_doctor()
+
+        if not medicos:
+            print("⚠️ No se encontraron médicos en la base de datos.")  # Debug
+            return jsonify({"error": False, "message": "No hay médicos registrados", "data": []}), 200
+
+        print(f"📡 Médicos obtenidos: {medicos}")  # Debug
+        return jsonify({"error": False, "message": "Datos obtenidos", "data": medicos}), 200
     except Exception as e:
-        return jsonify({'error': True, 'message': f'Error inesperado: {e}'}), 500
+        print(f"❌ ERROR en read_medicos: {repr(e)}")  # 🔥 Ahora mostrará el error real
+        return jsonify({"error": True, "message": f"Ocurrió un error: {repr(e)}"}), 500
     
 def update_doctor(id):
     try:
