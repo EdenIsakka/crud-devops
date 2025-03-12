@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ feature/doctor-crud ]
+    branches: [ master ]
   pull_request:
     branches: [ feature/doctor-crud ]
 
