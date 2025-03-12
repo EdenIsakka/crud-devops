@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ master ]
+    branches: [ feature/doctor-crud ]
   pull_request:
-    branches: [ master ]
+    branches: [ feature/doctor-crud ]
 
 jobs:
   build-and-test:
@@ -13,7 +13,10 @@ jobs:
     steps:
       # 1. Clonar el repositorio
       - name: Check out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Show worskpace structure
+        run: ls -R
 
       # 2. Configurar Python
       - name: Set up Python

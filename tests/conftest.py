@@ -1,13 +1,12 @@
-import sys
 import os
+import sys
 
 print("Directorio de trabajo:", os.getcwd())
 print("Contenido del directorio:", os.listdir(os.getcwd()))
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import pytest
 from sqlalchemy import text
-from main import app, get_db
+from main import get_db
 
 @pytest.fixture(autouse=True, scope="function")
 def clear_db():
