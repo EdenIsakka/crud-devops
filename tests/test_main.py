@@ -1,13 +1,13 @@
-# tests/test_main.py
+
 from fastapi.testclient import TestClient
-from main import app  # Asegúrate de que 'app' es el objeto FastAPI exportado en main.py
+from main import app
 
 client = TestClient(app)
 
 def test_get_empty_doctors():
     response = client.get("/doctors/")
     assert response.status_code == 200
-    # Suponiendo que la base de datos de pruebas esté vacía
+
     assert response.json() == []
 
 def test_create_doctor():
