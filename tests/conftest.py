@@ -9,7 +9,6 @@ import pytest
 from sqlalchemy import text
 from main import app, get_db
 
-
 @pytest.fixture(autouse=True, scope="function")
 def clear_db():
 
