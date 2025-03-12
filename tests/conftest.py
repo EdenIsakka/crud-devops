@@ -1,10 +1,12 @@
 import sys
 import os
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import pytest
 from sqlalchemy import text
 from main import app, get_db
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 @pytest.fixture(autouse=True, scope="function")
 def clear_db():
