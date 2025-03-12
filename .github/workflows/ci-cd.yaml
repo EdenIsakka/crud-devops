@@ -32,8 +32,8 @@ jobs:
           pip install pytest coverage
 
       # 4. Ejecutar las pruebas unitarias
-      - name: Run tests
-        run: PYTHONPATH=. pytest --maxfail=1 --disable-warnings -q
+      - name: Run tests with PythonPath
+        run: PYTHONPATH=$GITHUB_WORKSPACE pytest --maxfail=1 --disable-warnings -q
 
       # 5. Generar reporte de cobertura
       - name: Run coverage

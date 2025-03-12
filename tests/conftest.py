@@ -1,13 +1,15 @@
 import os
 import sys
 
-print("Directorio de trabajo:", os.getcwd())
+# Depuración para ver la ruta en GitHub Actions
+print("Directorio actual:", os.getcwd())
 print("Contenido del directorio:", os.listdir(os.getcwd()))
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import pytest
-from sqlalchemy import text
-from main import get_db
 
+# Asegurar que la raíz del proyecto está en `sys.path`
+sys.path.insert(0, os.getcwd())
+
+import pytest
+from main import app, get_db
 @pytest.fixture(autouse=True, scope="function")
 def clear_db():
 
