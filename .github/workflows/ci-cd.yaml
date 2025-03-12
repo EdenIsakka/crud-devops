@@ -77,7 +77,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
-      - name: Deploy to Production
+      - name: Deploy to Railway
         run: |
-          echo "Aquí iría el comando para desplegar tu aplicación"
-          # Ejemplo: ssh usuario@tu_servidor 'docker pull ${{ secrets.DOCKER_USERNAME }}/miapp:latest && docker-compose up -d'
+          curl -fsSL https://railway.app/install.sh | sh
+          railway login --token ${{ secrets.RAILWAY_TOKEN }}
+          railway up
