@@ -4,11 +4,23 @@ from sqlalchemy.orm import Session
 from database import SessionLocal, engine
 from models import Base, Doctor, Enfermera, Paciente
 from schemas import DoctorCreate, DoctorUpdate, DoctorOut, EnfermeraCreate, EnfermeraUpdate, EnfermeraOut, PacienteCreate, PacienteUpdate, PacienteOut
+import time
+import threading
 
 # Crear las tablas
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+
+def keep_alive():
+    while True:
+        print("✅ Running...")
+        time.sleep(60)
+threading.Thread(target=keep_alive, daemon=True).start()
+@app.get("/")
+def read_root():
+    return {'message': 'API funcionando correctamente'}
 
 # Dependencia para obtener la sesión de la BD
 def get_db():
@@ -17,8 +29,6 @@ def get_db():
         yield db
     finally:
         db.close()
-
-
 
 @app.post("/doctors/", response_model=DoctorOut)
 def create_doctor(doctor: DoctorCreate, db: Session = Depends(get_db)):
