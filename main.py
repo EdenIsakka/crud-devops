@@ -10,6 +10,10 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+@app.get("/")
+def read_root():
+    return {'message': 'API funcionando correctamente'}
+
 # Dependencia para obtener la sesión de la BD
 def get_db():
     db = SessionLocal()
