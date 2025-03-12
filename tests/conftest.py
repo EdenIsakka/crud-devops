@@ -1,12 +1,5 @@
-
-import sys
-import os
-
-# Agregar el directorio raíz al PYTHONPATH
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import pytest
-from sqlalchemy.sql import text  # <-- Asegúrate de importar esto
+from sqlalchemy import text
 from main import app, get_db
 
 @pytest.fixture(autouse=True, scope="function")
