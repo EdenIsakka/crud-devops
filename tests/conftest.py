@@ -1,36 +1,24 @@
 import sys
 import os
 import pytest
+from sqlalchemy import text
+from main import app, get_db
 
-# Agrega el directorio raíz del proyecto al path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-import models  # Se importa todo el módulo models
-from database import SQLALCHEMY_DATABASE_URL
-from models import Base
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-
+# Fixture para limpiar las tablas en Neon antes de cada test
 @pytest.fixture(autouse=True, scope="function")
 def clear_db():
-    # Crea las tablas si no existen
-    Base.metadata.create_all(bind=engine)
-
-    connection = engine.connect()
-    trans = connection.begin()
-    session = TestingSessionLocal(bind=connection)
-
+    # Obtén una sesión usando la dependencia original (que usa Neon)
+    db_gen = get_db()
+    db = next(db_gen)
     try:
-        # Elimina los datos de cada tabla
-        session.query(models.Doctor).delete()
-        session.query(models.Enfermera).delete()
-        session.query(models.Paciente).delete()
-        session.commit()
-        yield
+        # Ejecuta TRUNCATE en cada tabla relevante
+        # Asegúrate de usar el nombre exacto de las tablas en la base de datos (por ejemplo, "doctors", "enfermeras", "pacientes")
+        for table in ["doctors", "enfermeras", "pacientes"]:
+            db.execute(text(f"TRUNCATE TABLE {table} RESTART IDENTITY CASCADE"))
+        db.commit()
+        yield  # Aquí se ejecuta el test con la base limpia
     finally:
-        trans.rollback()
-        connection.close()
+        try:
+            next(db_gen)
+        except StopIteration:
+            pass
