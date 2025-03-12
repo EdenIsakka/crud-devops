@@ -1,11 +1,11 @@
-# main.py
+
 from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
 from database import SessionLocal, engine
 from models import Base, Doctor, Enfermera, Paciente
 from schemas import DoctorCreate, DoctorUpdate, DoctorOut, EnfermeraCreate, EnfermeraUpdate, EnfermeraOut, PacienteCreate, PacienteUpdate, PacienteOut
 
-# Crear las tablas (si aún no se han creado)
+# Crear las tablas
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -18,9 +18,8 @@ def get_db():
     finally:
         db.close()
 
-# CRUD para Doctor
 
-# POST: Crear un nuevo doctor
+
 @app.post("/doctors/", response_model=DoctorOut)
 def create_doctor(doctor: DoctorCreate, db: Session = Depends(get_db)):
     db_doctor = Doctor(**doctor.dict())
@@ -29,13 +28,13 @@ def create_doctor(doctor: DoctorCreate, db: Session = Depends(get_db)):
     db.refresh(db_doctor)
     return db_doctor
 
-# GET: Obtener la lista de doctores
+
 @app.get("/doctors/", response_model=list[DoctorOut])
 def read_doctors(db: Session = Depends(get_db)):
     doctors = db.query(Doctor).all()
     return doctors
 
-# GET: Obtener un doctor por su id
+
 @app.get("/doctors/{doctor_id}", response_model=DoctorOut)
 def read_doctor(doctor_id: int, db: Session = Depends(get_db)):
     doctor = db.query(Doctor).filter(Doctor.id == doctor_id).first()
@@ -43,7 +42,7 @@ def read_doctor(doctor_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Doctor no encontrado")
     return doctor
 
-# PUT: Actualizar completamente un doctor (todos los campos)
+
 @app.put("/doctors/{doctor_id}", response_model=DoctorOut)
 def update_doctor(doctor_id: int, doctor_update: DoctorCreate, db: Session = Depends(get_db)):
     doctor = db.query(Doctor).filter(Doctor.id == doctor_id).first()
@@ -56,7 +55,7 @@ def update_doctor(doctor_id: int, doctor_update: DoctorCreate, db: Session = Dep
     db.refresh(doctor)
     return doctor
 
-# PATCH: Actualizar parcialmente un doctor
+
 @app.patch("/doctors/{doctor_id}", response_model=DoctorOut)
 def patch_doctor(doctor_id: int, doctor_update: DoctorUpdate, db: Session = Depends(get_db)):
     doctor = db.query(Doctor).filter(Doctor.id == doctor_id).first()
@@ -69,7 +68,6 @@ def patch_doctor(doctor_id: int, doctor_update: DoctorUpdate, db: Session = Depe
     db.refresh(doctor)
     return doctor
 
-# DELETE: Eliminar un doctor
 @app.delete("/doctors/{doctor_id}")
 def delete_doctor(doctor_id: int, db: Session = Depends(get_db)):
     doctor = db.query(Doctor).filter(Doctor.id == doctor_id).first()
@@ -79,9 +77,7 @@ def delete_doctor(doctor_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"mensaje": "Doctor eliminado correctamente"}
 
-# Repite el mismo patrón para Enfermera y Paciente:
 
-# --- CRUD para Enfermera ---
 
 @app.post("/enfermeras/", response_model=EnfermeraOut)
 def create_enfermera(enfermera: EnfermeraCreate, db: Session = Depends(get_db)):
@@ -136,7 +132,6 @@ def delete_enfermera(enfermera_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"mensaje": "Enfermera eliminada correctamente"}
 
-# --- CRUD para Paciente ---
 
 @app.post("/pacientes/", response_model=PacienteOut)
 def create_paciente(paciente: PacienteCreate, db: Session = Depends(get_db)):
