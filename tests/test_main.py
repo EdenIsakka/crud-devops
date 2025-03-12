@@ -24,20 +24,25 @@ def test_create_doctor():
     assert data["correo"] == doctor_data["correo"]
     assert "id" in data  # El ID se genera automáticamente
 
+
 def test_get_doctor_by_id():
     doctor_data = {
         "nombre": "Ana",
         "apellido": "Garcia",
         "correo": "anagarcia@example.com"
     }
-    response = client.post("/doctors/", json=doctor_data)
-    doctor_id = response.json()["id"]
 
-    response_get = client.get(f"/doctors/{doctor_id}")
-    assert response_get.status_code == 200
-    data = response_get.json()
-    assert data["id"] == doctor_id
-    assert data["nombre"] == doctor_data["nombre"]
+    response = client.post("/doctors/", json=doctor_data)
+    assert response.status_code == 200, f"Error en POST: {response.text}"
+
+    doctor_created = response.json()
+    assert "id" in doctor_created, "No se generó un ID para el doctor"
+
+    doctor_id = doctor_created["id"]
+    response = client.get(f"/doctors/{doctor_id}")
+    assert response.status_code == 200, f"Error en GET: {response.text}"
+    assert response.json()["nombre"] == "Ana"
+
 
 def test_update_doctor():
     # Crear doctor
