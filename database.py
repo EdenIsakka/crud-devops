@@ -6,4 +6,3 @@ SQLALCHEMY_DATABASE_URL = "postgresql://neondb_owner:npg_8HJQDEgrF9pT@ep-weather
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
