@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from schemas import DoctorCreate, EnfermeraCreate, PacienteCreate
-from services.queue_sender import enviar_mensaje_a_cola
+from services import publisher
 
 app = FastAPI()
 
@@ -11,8 +11,6 @@ def create_doctor(doctor: DoctorCreate):
         "model": "doctor",
         "payload": doctor.dict()
     }
-    enviar_mensaje_a_cola(data)
-    return {"status": "mensaje enviado a la cola"}
 
 @app.post("/enfermeras/")
 def create_enfermera(enfermera: EnfermeraCreate):
@@ -21,8 +19,7 @@ def create_enfermera(enfermera: EnfermeraCreate):
         "model": "enfermera",
         "payload": enfermera.dict()
     }
-    enviar_mensaje_a_cola(data)
-    return {"status": "mensaje enviado a la cola"}
+
 
 @app.post("/pacientes/")
 def create_paciente(paciente: PacienteCreate):
@@ -31,5 +28,5 @@ def create_paciente(paciente: PacienteCreate):
         "model": "paciente",
         "payload": paciente.dict()
     }
-    enviar_mensaje_a_cola(data)
-    return {"status": "mensaje enviado a la cola"}
+
+app.include_router(publisher.router, prefix="/saga")
