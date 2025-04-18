@@ -1,33 +1,20 @@
-from http.client import HTTPException
+# publisher.py
 
-from fastapi import FastAPI
-from schemas import DoctorCreate, EnfermeraCreate, PacienteCreate
-import publisher  # ✅ ahora publisher está en la misma carpeta
+from fastapi import APIRouter, HTTPException
 import httpx
 import json
 
-app = FastAPI()
+router = APIRouter()
 
-@app.post("/doctors/")
-def create_doctor(doctor: DoctorCreate):
-    ...
-
-@app.post("/enfermeras/")
-def create_enfermera(enfermera: EnfermeraCreate):
-    ...
-
-@app.post("/pacientes/")
-def create_paciente(paciente: PacienteCreate):
-    ...
-@app.post("/publish/")
+@router.post("/publish/")
 async def publish_message():
     try:
         message_string = json.dumps({
             "type": "event",
-            "sendTo": "microservice2"
+            "sendTo": "microservice1"
         })
 
-        url = "https://house-inventory-devops-production.up.railway.app/api/v2/messages/publish"
+        url = "http://localhost:8080/api/v2/messages"
         headers = {
             "Content-Type": "application/json",
             "X-Source": "coordinator",
@@ -49,5 +36,3 @@ async def publish_message():
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al publicar el mensaje: {e}")
-
-
