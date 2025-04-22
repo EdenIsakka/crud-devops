@@ -2,7 +2,6 @@ from http.client import HTTPException
 
 from fastapi import FastAPI
 from schemas import DoctorCreate, EnfermeraCreate, PacienteCreate
-import publisher  # ✅ ahora publisher está en la misma carpeta
 import httpx
 import json
 

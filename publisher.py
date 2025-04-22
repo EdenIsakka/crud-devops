@@ -1,10 +1,16 @@
 # publisher.py
-
+import os
 from fastapi import APIRouter, HTTPException
 import httpx
 import json
+from dotenv import load_dotenv
+
+load_dotenv()
 
 router = APIRouter()
+
+POST_URL = os.getenv("POST_URL")
+
 
 @router.post("/publish/")
 async def publish_message():
@@ -14,7 +20,6 @@ async def publish_message():
             "sendTo": "microservice1"
         })
 
-        url = "http://localhost:8080/api/v2/messages"
         headers = {
             "Content-Type": "application/json",
             "X-Source": "coordinator",
@@ -26,7 +31,7 @@ async def publish_message():
         }
 
         async with httpx.AsyncClient() as client:
-            response = await client.post(url, headers=headers, json=payload)
+            response = await client.post(POST_URL, headers=headers, json=payload)
 
         return {
             "status": "Mensaje publicado",
