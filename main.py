@@ -1,9 +1,11 @@
-from http.client import HTTPException
-
-from fastapi import FastAPI
-from schemas import DoctorCreate, EnfermeraCreate, PacienteCreate
+from fastapi import FastAPI, HTTPException, Request
 import httpx
 import json
+from schemas import DoctorCreate, EnfermeraCreate, PacienteCreate
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI()
 
@@ -18,15 +20,24 @@ def create_enfermera(enfermera: EnfermeraCreate):
 @app.post("/pacientes/")
 def create_paciente(paciente: PacienteCreate):
     ...
+
 @app.post("/publish/")
-async def publish_message():
+async def publish_message(request: Request):
     try:
+        # Leer el cuerpo del Postman
+        body = await request.json()
+        send_to = body.get("sendTo")
+
+        if not send_to:
+            raise HTTPException(status_code=400, detail="El campo 'sendTo' es obligatorio")
+
+        # Construir el mensaje a enviar
         message_string = json.dumps({
             "type": "event",
-            "sendTo": "microservice2"
+            "sendTo": send_to
         })
 
-        url = "https://house-inventory-devops-production.up.railway.app/api/v2/messages/publish"
+        url = os.getenv("POST_URL", "https://house-inventory-devops-production.up.railway.app/api/v2/messages/publish")
         headers = {
             "Content-Type": "application/json",
             "X-Source": "coordinator",
@@ -48,5 +59,3 @@ async def publish_message():
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al publicar el mensaje: {e}")
-
-
