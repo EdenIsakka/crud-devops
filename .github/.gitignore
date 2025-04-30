@@ -2,3 +2,4 @@ echo ".idea/" >> .gitignore
 git rm -r --cached .idea
 git commit -m "Ignoring IDE files"
 git push origin feature/doctor-crud
+.env
