@@ -1,17 +1,21 @@
-# subscriber.py
-
 import os
 import json
-from azure.servicebus import ServiceBusClient, ServiceBusMessage
+from azure.servicebus import ServiceBusClient
 from dotenv import load_dotenv
+from pymongo import MongoClient
 
 load_dotenv()
 
-# Conexión
-
+# Variables de entorno
 CONNECTION_STR = os.getenv("CONNECTION_STR")
 TOPIC_NAME = os.getenv("TOPIC_NAME")
 SUBSCRIPTION_NAME = os.getenv("SUBSCRIPTION_NAME")
+MONGO_URI = os.getenv("MONGO_URI")
+
+# Cliente Mongo
+mongo_client = MongoClient(MONGO_URI)
+db = mongo_client["saga_logs"]
+collection = db["messages"]
 
 def generate_fake_data():
     return {
@@ -22,16 +26,15 @@ def generate_fake_data():
 
 def process_message(message):
     try:
-        # Leer y decodificar el mensaje
-        raw_body = str(message)
-        body = json.loads(raw_body)
-
-        # Enriquecer con datos del microservicio
+        body = json.loads(str(message))
         enriched = {**body, **generate_fake_data()}
 
-        # Mostrar resultado
         print("\n📥 MENSAJE RECIBIDO Y PROCESADO:")
         print(json.dumps(enriched, indent=2))
+
+        # Guardar en MongoDB
+        collection.insert_one(enriched)
+        print("✅ Mensaje guardado en MongoDB.")
 
     except Exception as e:
         print(f"❌ Error al procesar mensaje: {e}")
@@ -47,7 +50,7 @@ def main():
 
         with receiver:
             for msg in receiver:
-                process_message(str(msg))
+                process_message(msg)
                 receiver.complete_message(msg)
 
 if __name__ == "__main__":
