@@ -12,7 +12,7 @@ TOPIC_NAME = os.getenv("TOPIC_NAME")
 SUBSCRIPTION_NAME = os.getenv("SUBSCRIPTION_NAME")
 MONGO_URI = os.getenv("MONGO_URI")
 
-# Cliente Mongo
+#gi Cliente Mongogit
 mongo_client = MongoClient(MONGO_URI)
 db = mongo_client["saga_logs"]
 collection = db["messages"]
